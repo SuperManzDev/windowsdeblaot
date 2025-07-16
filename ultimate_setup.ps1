@@ -18,7 +18,7 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 Write-Host "--- Administrator privileges confirmed." -ForegroundColor Green
 
 
-# Step 2: System Personalization
+# Step 2: System Personalization (Bug Fix Applied)
 Write-Host "--- Applying UI customizations..." -ForegroundColor Yellow
 try {
     # Set Dark Mode for Apps & System
@@ -27,12 +27,12 @@ try {
     # Set Black Background
     Set-ItemProperty -Path 'HKCU:\Control Panel\Desktop' -Name 'Wallpaper' -Value ''
     # Set Small Taskbar (0=Small, 1=Medium, 2=Large)
-    Set-ItemProperty -Path 'HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name 'TaskbarSi' -Value 0
+    Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name 'TaskbarSi' -Value 0
     # Force the system to update UI settings
     RUNDLL32.EXE user32.dll, UpdatePerUserSystemParameters 1, True
     Write-Host "--- Personalization settings applied." -ForegroundColor Green
 } catch {
-    Write-Warning "--- Could not apply all personalization settings."
+    Write-Warning "--- Could not apply all personalization settings. Error: $($_.Exception.Message)"
 }
 
 
@@ -46,10 +46,10 @@ if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
 Write-Host "--- Chocolatey is ready." -ForegroundColor Green
 
 
-# Step 4: Install ALL Software via Chocolatey
+# Step 4: Install ALL Software via Chocolatey (Discord & 7-Zip Added)
 Write-Host "--- Installing a large list of software. THIS WILL TAKE A LONG TIME..." -ForegroundColor Yellow
 $packages = @(
-    "python", "openjdk", "git", "adb", "brave", "vscode", "notepadplusplus",
+    "python", "openjdk", "git", "adb", "brave", "vscode", "notepadplusplus", "discord", "7zip",
     "gimp", "libreoffice-fresh", "vlc", "handbrake", "parsec", "steam", "epicgameslauncher",
     "rufus", "balenaetcher", "cpu-z", "gpu-z", "localsend", "msi-afterburner", "revo-uninstaller"
 )
@@ -63,7 +63,8 @@ Write-Host "--- All software has been installed." -ForegroundColor Green
 # Step 5: Disable Startup Programs
 Write-Host "--- Disabling startup for common applications..." -ForegroundColor Yellow
 $runPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"
-$startupApps = @("Steam", "com.epicgames.launcher", "Parsec", "MSIAfterburner")
+# Note: Discord is often managed by its own settings, but we can try to remove the run key.
+$startupApps = @("Steam", "com.epicgames.launcher", "Parsec", "MSIAfterburner", "Discord")
 foreach ($appName in $startupApps) {
     if (Test-Path "$runPath\$appName") {
         Remove-ItemProperty -Path $runPath -Name $appName -Force -ErrorAction SilentlyContinue
@@ -77,7 +78,7 @@ Write-Host "--- Starting manual & OS-specific installations..." -ForegroundColor
 $desktopPath = [System.Environment]::GetFolderPath('Desktop')
 $tempPath = $env:TEMP
 
-# Install 3uTools (using new URL)
+# Install 3uTools
 try {
     Write-Host "Downloading and installing 3uTools..."
     $3uToolsUrl = "https://url2.3u.com/MNBBfyaa"
@@ -90,7 +91,6 @@ try {
 }
 
 # Install Minecraft Launcher
-# (This is unchanged from the previous version)
 try {
     Write-Host "Downloading and setting up UltimMC Minecraft Launcher..."
     $minecraftFolder = Join-Path $desktopPath "Minecraft"
