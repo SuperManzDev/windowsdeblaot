@@ -27,6 +27,7 @@ if '%errorlevel%' NEQ '0' (
 :: -----------------------------------------------------------------
 ECHO =======================================================
 ECHO Running the PowerShell setup script with Admin rights...
+ECHO This will bypass the execution policy.
 ECHO =======================================================
 ECHO.
 
