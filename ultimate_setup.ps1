@@ -94,7 +94,7 @@ try {
 try {
     Write-Host "Downloading and setting up UltimMC Minecraft Launcher..."
     $minecraftFolder = Join-Path $desktopPath "Minecraft"
-    $zipUrl = "https://github.com/UltimMC/Launcher/archive/refs/heads/develop.zip"
+    $zipUrl = "https://nightly.link/UltimMC/Launcher/workflows/main/develop/mmc-cracked-win32.zip"
     $zipFile = Join-Path $tempPath "minecraft_launcher.zip"
     New-Item -Path $minecraftFolder -ItemType Directory -Force | Out-Null
     Invoke-WebRequest -Uri $zipUrl -OutFile $zipFile
